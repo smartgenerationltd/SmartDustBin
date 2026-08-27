@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SG SmartBin Firestore Schema & Security Blueprint",
+  "description": "Production database schema and role-based access rules for SG SmartBin IoT Waste & Advertising Management System",
+  "entities": {
+    "users": {
+      "title": "User Profiles",
+      "description": "Registered municipal operators, route collectors, digital advertisers, and auditors",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["ADMIN", "OPERATOR", "COLLECTOR", "ADVERTISER", "VIEWER"] },
+        "phone": { "type": "string" },
+        "organization": { "type": "string" },
+        "avatarUrl": { "type": "string" },
+        "assignedZone": { "type": "string" },
+        "advertiserId": { "type": "string" },
+        "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] },
+        "lastActive": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "role"]
+    },
+    "bins": {
+      "title": "SmartBins Hardware Fleet",
+      "description": "Solar-powered 3-compartment waste stations with ultrasonic sensors and LED ad screens",
+      "type": "object",
+      "properties": {
+        "binId": { "type": "string" },
+        "name": { "type": "string" },
+        "location": { "type": "string" },
+        "district": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "foodFillLevel": { "type": "number" },
+        "recyclingFillLevel": { "type": "number" },
+        "generalFillLevel": { "type": "number" },
+        "temperature": { "type": "number" },
+        "humidity": { "type": "number" },
+        "batteryLevel": { "type": "number" },
+        "solarStatus": { "type": "string" },
+        "connectivityStatus": { "type": "string" },
+        "lastUpdated": { "type": "string" },
+        "maintenanceStatus": { "type": "string" }
+      },
+      "required": ["binId", "name", "location", "district"]
+    },
+    "collections": {
+      "title": "Waste Collection Dispatches",
+      "description": "Scheduled and completed waste clearance logs and route records",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "binId": { "type": "string" },
+        "binName": { "type": "string" },
+        "location": { "type": "string" },
+        "collectorId": { "type": "string" },
+        "collectorName": { "type": "string" },
+        "scheduledDate": { "type": "string" },
+        "completedDate": { "type": "string" },
+        "status": { "type": "string", "enum": ["SCHEDULED", "IN_PROGRESS", "COMPLETED", "CANCELLED"] },
+        "wasteCategories": { "type": "array", "items": { "type": "string" } },
+        "approximateKg": { "type": "number" },
+        "priority": { "type": "string", "enum": ["CRITICAL", "HIGH", "NORMAL"] }
+      },
+      "required": ["id", "binId", "collectorId", "status"]
+    },
+    "advertisements": {
+      "title": "LED Screen Ad Campaigns",
+      "description": "Digital advertising campaigns displayed on the SmartBin 3000-nits upper LED displays",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "advertiser": { "type": "string" },
+        "advertiserId": { "type": "string" },
+        "mediaUrl": { "type": "string" },
+        "mediaType": { "type": "string" },
+        "startDate": { "type": "string" },
+        "endDate": { "type": "string" },
+        "targetBinIds": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["DRAFT", "ACTIVE", "SCHEDULED", "EXPIRED"] },
+        "impressions": { "type": "number" },
+        "revenueRwf": { "type": "number" },
+        "revenueUsd": { "type": "number" }
+      },
+      "required": ["id", "name", "advertiser", "status"]
+    },
+    "alerts": {
+      "title": "Hardware and Sensor Alarms",
+      "description": "Sensor-generated critical alerts, battery warnings, and collection requirements",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "binId": { "type": "string" },
+        "binName": { "type": "string" },
+        "type": { "type": "string" },
+        "severity": { "type": "string", "enum": ["CRITICAL", "WARNING", "INFO"] },
+        "status": { "type": "string", "enum": ["ACTIVE", "RESOLVED", "ACKNOWLEDGED"] },
+        "message": { "type": "string" }
+      },
+      "required": ["id", "binId", "type", "severity", "status"]
+    },
+    "advertisers": {
+      "title": "Corporate Advertisers",
+      "description": "Brand partners and corporate entities sponsoring the SmartBin digital screen network",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "companyName": { "type": "string" },
+        "contactEmail": { "type": "string" },
+        "industry": { "type": "string" },
+        "activeCampaignsCount": { "type": "number" },
+        "totalSpentRwf": { "type": "number" }
+      },
+      "required": ["id", "name", "companyName"]
+    },
+    "aiInsights": {
+      "title": "Gemini AI Predictive Analytics",
+      "description": "Automated route optimization, overflow forecast, and circular economy intelligence",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "impactLevel": { "type": "string" },
+        "recommendation": { "type": "string" },
+        "isActionable": { "type": "boolean" }
+      },
+      "required": ["id", "title", "recommendation"]
+    },
+    "maintenanceRecords": {
+      "title": "Maintenance & Calibration Logs",
+      "description": "Field technician hardware service logs, ultrasonic transducer checks, and solar maintenance",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "binId": { "type": "string" },
+        "technicianId": { "type": "string" },
+        "type": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "binId", "technicianId"]
+    }
+  }
+}

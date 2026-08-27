@@ -1,0 +1,6 @@
+{
+  "name": "SG SmartBin",
+  "description": "AI-powered IoT waste management and digital advertising platform for smart cities by SG AI Agency.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
